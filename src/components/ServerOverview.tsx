@@ -148,7 +148,7 @@ export default function ServerOverview({
               </section>
             </section>
             {!disableAnimatedMan && (
-              <img className="absolute right-3 top-[-85px] z-50 w-20 scale-90 group-hover:opacity-50 md:scale-100 transition-all" alt={"animated-man"} src={customIllustration} loading="eager" />
+              <img className="absolute right-[-30px] top-[-120px] z-10 w-40 scale-100 group-hover:opacity-50 md:scale-100 transition-all" alt={"animated-man"} src={customIllustration} loading="eager" />
             )}
           </CardContent>
         </Card>
