@@ -47,7 +47,9 @@ const MainApp: React.FC = () => {
 		window.ForceTheme as string !== "" ? window.ForceTheme : undefined;
 
 	useEffect(() => {
-		if (forceTheme === "dark" || forceTheme === "light") {
+		const savedTheme = localStorage.getItem("vite-ui-theme");
+		// Only auto-apply ForceTheme if the user hasn't manually picked one (or picked 'system')
+		if ((!savedTheme || savedTheme === "system") && (forceTheme === "dark" || forceTheme === "light")) {
 			setTheme(forceTheme);
 		}
 	}, [forceTheme, setTheme]);

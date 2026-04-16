@@ -190,7 +190,6 @@
 @layer base {
 	* {
 		@apply border-border;
-		font-family: 'LXGW WenKai Screen', sans-serif !important;
 	}
 	html {
 		@apply scroll-smooth;
@@ -200,9 +199,10 @@
 		/* font-feature-settings: "rlig" 1, "calt" 1; */
 		font-synthesis-weight: none;
 		text-rendering: optimizeLegibility;
+		font-family: 'LXGW WenKai Screen', sans-serif;
 	}
 	h1, h2, h3, h4, h5, h6 {
-		font-family: 'LXGW WenKai Screen', sans-serif !important;
+		font-family: 'LXGW WenKai Screen', sans-serif;
 	}
 }
 
