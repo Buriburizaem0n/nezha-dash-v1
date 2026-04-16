@@ -5,6 +5,7 @@ import { getDomains, Domain } from '@/api/domain';
 import { CalendarDays, DollarSign } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
+import RemainPercentBar from "./RemainPercentBar";
 
 // =======================================================
 // 彩色备注标签组件
@@ -98,21 +99,7 @@ const DomainCard = ({ domain }: { domain: Domain }) => {
   const billingData = domain.BillingData || {};
   const customBackgroundImage = (window as any).CustomBackgroundImage !== "" ? (window as any).CustomBackgroundImage : undefined;
 
-  let progressBarColor = 'bg-gray-300';
-  let progressBarWidth = '100%';
 
-  if (expiresIn !== undefined) {
-      if (expiresIn <= 10) {
-        progressBarColor = 'bg-red-500';
-        progressBarWidth = `${Math.max(5, (expiresIn / 10) * 100)}%`;
-      } else if (expiresIn <= 100) {
-        const lightness = 50 + (expiresIn - 10) / 90 * 20;
-        progressBarColor = `bg-[hsl(45,90%,${lightness}%)]`;
-        progressBarWidth = `${Math.max(5, (expiresIn / 100) * 100)}%`;
-      } else {
-        progressBarColor = 'bg-green-500';
-      }
-  }
 
   return (
     <a href={`https://${domain.Domain}`} target="_blank" rel="noopener noreferrer" className="block h-full">
@@ -136,9 +123,7 @@ const DomainCard = ({ domain }: { domain: Domain }) => {
              <span className="truncate">{billingData.renewalPrice || 'N/A'}</span>
           </div>
           <div className="flex-1">
-             <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
-                <div className={cn("h-1.5 rounded-full transition-all duration-500", progressBarColor)} style={{ width: progressBarWidth }} />
-             </div>
+             <RemainPercentBar value={expiresIn ? Math.max(0, Math.min(100, (expiresIn / 365) * 100)) : 100} className="w-full h-1.5" />
           </div>
           <span className="font-medium text-muted-foreground w-12 text-right">{expiresIn !== undefined ? `${expiresIn}天` : 'N/A'}</span>
         </div>
