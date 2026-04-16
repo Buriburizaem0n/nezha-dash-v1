@@ -59,6 +59,9 @@ const MainApp: React.FC = () => {
 				window.CustomBackgroundImage = config.background_image_day;
 			}
 			window.CustomMobileBackgroundImage = window.CustomBackgroundImage;
+
+			// 设置强制主题
+			window.ForceTheme = isNight ? "dark" : "light";
 		}
 	}, [settingData]);
 
