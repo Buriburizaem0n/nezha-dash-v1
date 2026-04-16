@@ -44,8 +44,7 @@ const MainApp: React.FC = () => {
 
 	// 检测是否强制指定了主题颜色
 	const forceTheme =
-		// @ts-expect-error ForceTheme is a global variable
-		(window.ForceTheme as string) !== "" ? window.ForceTheme : undefined;
+		window.ForceTheme as string !== "" ? window.ForceTheme : undefined;
 
 	useEffect(() => {
 		if (forceTheme === "dark" || forceTheme === "light") {

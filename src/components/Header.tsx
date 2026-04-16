@@ -70,10 +70,8 @@ function Header() {
 
 	const siteName = settingData?.data?.config?.site_name;
 
-	// @ts-expect-error CustomLogo is a global variable
 	const customLogo = window.CustomLogo || "/apple-touch-icon.png";
 
-	// @ts-expect-error CustomDesc is a global variable
 	const customDesc = window.CustomDesc || t("nezha");
 
 	const customMobileBackgroundImage =
@@ -208,7 +206,6 @@ type links = {
 };
 
 function Links() {
-	// @ts-expect-error CustomLinks is a global variable
 	const customLinks = window.CustomLinks as string;
 
 	const links: links[] | null = customLinks ? JSON.parse(customLinks) : null;

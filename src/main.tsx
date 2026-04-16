@@ -12,8 +12,11 @@ import { SortProvider } from "./context/sort-provider";
 import { StatusProvider } from "./context/status-provider";
 import { TooltipProvider } from "./context/tooltip-provider";
 import { WebSocketProvider } from "./context/websocket-provider";
+import { initCustomConfig } from "./lib/custom-config";
 import "./i18n";
 import "./index.css";
+
+initCustomConfig();
 
 const queryClient = new QueryClient();
 
