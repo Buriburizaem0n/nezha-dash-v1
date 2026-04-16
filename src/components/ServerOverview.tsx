@@ -16,7 +16,6 @@ type ServerOverviewProps = {
 	up: number;
 	down: number;
 	upSpeed: number;
-	upSpeed: number;
 	downSpeed: number;
 	totalDomains: number; // 新增：接收域名总数
 	onViewChange: (view: 'servers' | 'domains') => void; // 新增：点击事件回调
