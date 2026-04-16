@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { DateTime } from "luxon";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -40,16 +41,38 @@ const MainApp: React.FC = () => {
 			InjectContext(settingData?.data?.config?.custom_code);
 			setIsCustomCodeInjected(true);
 		}
-	}, [settingData?.data?.config?.custom_code]);
+
+		// 同步自定义配置到全局变量
+		const config = settingData?.data?.config;
+		if (config) {
+			if (config.custom_logo) window.CustomLogo = config.custom_logo;
+			if (config.custom_description)
+				window.CustomDesc = config.custom_description;
+			if (config.custom_links) window.CustomLinks = config.custom_links;
+
+			const hour = DateTime.now().hour;
+			const isNight = hour >= 18 || hour < 6;
+
+			if (isNight && config.background_image_night) {
+				window.CustomBackgroundImage = config.background_image_night;
+			} else if (!isNight && config.background_image_day) {
+				window.CustomBackgroundImage = config.background_image_day;
+			}
+			window.CustomMobileBackgroundImage = window.CustomBackgroundImage;
+		}
+	}, [settingData]);
 
 	// 检测是否强制指定了主题颜色
 	const forceTheme =
-		window.ForceTheme as string !== "" ? window.ForceTheme : undefined;
+		(window.ForceTheme as string) !== "" ? window.ForceTheme : undefined;
 
 	useEffect(() => {
 		const savedTheme = localStorage.getItem("vite-ui-theme");
 		// Only auto-apply ForceTheme if the user hasn't manually picked one (or picked 'system')
-		if ((!savedTheme || savedTheme === "system") && (forceTheme === "dark" || forceTheme === "light")) {
+		if (
+			(!savedTheme || savedTheme === "system") &&
+			(forceTheme === "dark" || forceTheme === "light")
+		) {
 			setTheme(forceTheme);
 		}
 	}, [forceTheme, setTheme]);

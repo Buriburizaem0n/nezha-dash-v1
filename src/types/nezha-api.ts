@@ -150,6 +150,11 @@ type SettingConfig = {
 	user_template: string;
 	admin_template: string;
 	custom_code: string;
+	custom_logo?: string;
+	custom_description?: string;
+	custom_links?: string;
+	background_image_day?: string;
+	background_image_night?: string;
 };
 
 export interface SettingResponse {
