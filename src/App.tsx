@@ -10,7 +10,6 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import Footer from "./components/Footer";
 import Header, { RefreshToast } from "./components/Header";
 import { useBackground } from "./hooks/use-background";
-import { useTheme } from "./hooks/use-theme";
 import { InjectContext } from "./lib/inject";
 import { fetchSetting } from "./lib/nezha-api";
 import { cn } from "./lib/utils";
@@ -32,53 +31,40 @@ const MainApp: React.FC = () => {
 		refetchOnWindowFocus: true,
 	});
 	const { i18n } = useTranslation();
-	const { setTheme } = useTheme();
 	const [isCustomCodeInjected, setIsCustomCodeInjected] = useState(false);
 	const { backgroundImage: customBackgroundImage } = useBackground();
 
 	useEffect(() => {
-		if (settingData?.data?.config?.custom_code) {
-			InjectContext(settingData?.data?.config?.custom_code);
-			setIsCustomCodeInjected(true);
-		}
+		const updateConfig = () => {
+			const config = settingData?.data?.config;
+			if (config) {
+				if (config.custom_code) {
+					InjectContext(config.custom_code);
+					setIsCustomCodeInjected(true);
+				}
 
-		// 同步自定义配置到全局变量
-		const config = settingData?.data?.config;
-		if (config) {
-			if (config.custom_logo) window.CustomLogo = config.custom_logo;
-			if (config.custom_description)
-				window.CustomDesc = config.custom_description;
-			if (config.custom_links) window.CustomLinks = config.custom_links;
+				// 同步自定义配置到全局变量
+				if (config.custom_logo) window.CustomLogo = config.custom_logo;
+				if (config.custom_description)
+					window.CustomDesc = config.custom_description;
+				if (config.custom_links) window.CustomLinks = config.custom_links;
 
-			const hour = DateTime.now().hour;
-			const isNight = hour >= 18 || hour < 6;
+				const hour = DateTime.now().hour;
+				const isNight = hour >= 18 || hour < 6;
 
-			if (isNight && config.background_image_night) {
-				window.CustomBackgroundImage = config.background_image_night;
-			} else if (!isNight && config.background_image_day) {
-				window.CustomBackgroundImage = config.background_image_day;
+				if (isNight && config.background_image_night) {
+					window.CustomBackgroundImage = config.background_image_night;
+				} else if (!isNight && config.background_image_day) {
+					window.CustomBackgroundImage = config.background_image_day;
+				}
+				window.CustomMobileBackgroundImage = window.CustomBackgroundImage;
 			}
-			window.CustomMobileBackgroundImage = window.CustomBackgroundImage;
+		};
 
-			// 设置强制主题
-			window.ForceTheme = isNight ? "dark" : "light";
-		}
+		updateConfig();
+		const interval = setInterval(updateConfig, 60000); // Check every minute
+		return () => clearInterval(interval);
 	}, [settingData]);
-
-	// 检测是否强制指定了主题颜色
-	const forceTheme =
-		(window.ForceTheme as string) !== "" ? window.ForceTheme : undefined;
-
-	useEffect(() => {
-		const savedTheme = localStorage.getItem("vite-ui-theme");
-		// Only auto-apply ForceTheme if the user hasn't manually picked one (or picked 'system')
-		if (
-			(!savedTheme || savedTheme === "system") &&
-			(forceTheme === "dark" || forceTheme === "light")
-		) {
-			setTheme(forceTheme);
-		}
-	}, [forceTheme, setTheme]);
 
 	if (error) {
 		return <ErrorPage code={500} message={error.message} />;
