@@ -151,7 +151,7 @@ export default function ServerOverview({
 			>
 				<CardContent className="flex h-full items-center px-6 py-3">
 					<section className="flex flex-col gap-1">
-						<p className="text-sm font-medium md:text-base">总域名数</p>
+						<p className="text-sm font-medium md:text-base">{t("serverOverview.totalDomains")}</p>
 						<div className="flex items-center gap-2">
 							<Globe className="h-4 w-4 text-muted-foreground" />
 							<div className="text-lg font-semibold">{totalDomains}</div>
@@ -195,7 +195,7 @@ export default function ServerOverview({
 					</section>
 					{!disableAnimatedMan && (
 						<img
-							className="absolute right-3 top-[-85px] z-50 w-20 scale-90 group-hover:opacity-50 md:scale-100 transition-all"
+							className="absolute right-2 top-[-72px] z-50 w-24 scale-90 group-hover:opacity-50 md:scale-100 transition-all"
 							alt={"animated-man"}
 							src={customIllustration}
 							loading="eager"

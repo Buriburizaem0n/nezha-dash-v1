@@ -1,15 +1,11 @@
-// src/components/DomainStatus.tsx (最终完整版)
-
 import { useQuery } from '@tanstack/react-query';
 import { getDomains, Domain } from '@/api/domain';
 import { CalendarDays, DollarSign } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import RemainPercentBar from "./RemainPercentBar";
 
-// =======================================================
-// 彩色备注标签组件
-// =======================================================
 const DomainNoteTags = ({ notes }: { notes?: string }) => {
   if (!notes) {
     return null;
@@ -42,11 +38,8 @@ const DomainNoteTags = ({ notes }: { notes?: string }) => {
   );
 };
 
-
-// =======================================================
-// 行内模式卡片 (Inline Mode Card)
-// =======================================================
 const DomainCardInline = ({ domain }: { domain: Domain }) => {
+  const { t } = useTranslation();
   const expiresIn = domain.expires_in_days;
   const billingData = domain.BillingData || {};
   const customBackgroundImage = (window as any).CustomBackgroundImage !== "" ? (window as any).CustomBackgroundImage : undefined;
@@ -75,13 +68,13 @@ const DomainCardInline = ({ domain }: { domain: Domain }) => {
             <span className="w-24 truncate">{billingData.registrar || 'N/A'}</span>
             <div className="flex items-center gap-1.5 w-28">
               <CalendarDays className="h-3.5 w-3.5" />
-              <span>到期: {billingData.endDate ? new Date(billingData.endDate).toLocaleDateString() : 'N/A'}</span>
+              <span>{t('domain.expiryPrefix')}: {billingData.endDate ? new Date(billingData.endDate).toLocaleDateString() : 'N/A'}</span>
             </div>
             <div className="flex items-center gap-1.5 w-24">
               <DollarSign className="h-3.5 w-3.5" />
               <span>{billingData.renewalPrice || 'N/A'}</span>
             </div>
-            <span className="font-semibold w-24">{expiresIn !== undefined ? `${expiresIn} 天` : 'N/A'}</span>
+            <span className="font-semibold w-24">{expiresIn !== undefined ? `${expiresIn} ${t('domain.days')}` : 'N/A'}</span>
           </div>
         </div>
         <DomainNoteTags notes={billingData.notes} />
@@ -90,16 +83,11 @@ const DomainCardInline = ({ domain }: { domain: Domain }) => {
   );
 };
 
-
-// =======================================================
-// 卡片模式 (Card Mode)
-// =======================================================
 const DomainCard = ({ domain }: { domain: Domain }) => {
+  const { t } = useTranslation();
   const expiresIn = domain.expires_in_days;
   const billingData = domain.BillingData || {};
   const customBackgroundImage = (window as any).CustomBackgroundImage !== "" ? (window as any).CustomBackgroundImage : undefined;
-
-
 
   return (
     <a href={`https://${domain.Domain}`} target="_blank" rel="noopener noreferrer" className="block h-full">
@@ -111,7 +99,7 @@ const DomainCard = ({ domain }: { domain: Domain }) => {
           <h4 className="font-semibold font-mono tracking-tight">{domain.Domain}</h4>
         </div>
         <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span className="font-medium">{billingData.registrar || '未知注册商'}</span>
+          <span className="font-medium">{billingData.registrar || t('domain.unknownRegistrar')}</span>
           <div className="flex items-center gap-1">
             <CalendarDays className="h-3 w-3" />
             <span>{billingData.endDate ? new Date(billingData.endDate).toLocaleDateString() : 'N/A'}</span>
@@ -125,7 +113,7 @@ const DomainCard = ({ domain }: { domain: Domain }) => {
           <div className="flex-1">
              <RemainPercentBar value={expiresIn ? Math.max(0, Math.min(100, (expiresIn / 365) * 100)) : 100} className="w-full h-1.5" />
           </div>
-          <span className="font-medium text-muted-foreground w-12 text-right">{expiresIn !== undefined ? `${expiresIn}天` : 'N/A'}</span>
+          <span className="font-medium text-muted-foreground w-12 text-right">{expiresIn !== undefined ? `${expiresIn}${t('domain.days')}` : 'N/A'}</span>
         </div>
         <div className="pt-1">
           <DomainNoteTags notes={billingData.notes} />
@@ -135,10 +123,6 @@ const DomainCard = ({ domain }: { domain: Domain }) => {
   );
 };
 
-
-// =======================================================
-// 主组件 (Main Component)
-// =======================================================
 export const DomainStatus = () => {
   const { data: domains, isLoading, error } = useQuery({
     queryKey: ['domains'],

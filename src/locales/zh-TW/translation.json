@@ -19,7 +19,8 @@
 		"offlineServers": "離線伺服器",
 		"totalBandwidth": "總帶寬",
 		"speed": "速率",
-		"network": "網路"
+		"network": "網路",
+		"totalDomains": "總域名數"
 	},
 	"map": {
 		"Distributions": "伺服器分布在",
@@ -94,7 +95,8 @@
 	"theme": {
 		"light": "亮色",
 		"dark": "暗色",
-		"system": "跟隨系統"
+		"system": "跟隨系統",
+		"scheduled": "定時切換"
 	},
 	"error": {
 		"pageNotFound": "頁面不存在",
@@ -136,6 +138,13 @@
 	"ToggleDarkMode": "切換暗色模式",
 	"ToggleSystemMode": "切換系統模式",
 	"Home": "首頁",
+	"domain": {
+		"registrar": "註冊商",
+		"expiryDate": "到期日期",
+		"expiryPrefix": "到期",
+		"days": "天",
+		"unknownRegistrar": "未知註冊商"
+	},
 	"pwa": {
 		"offlineReady": "可離線使用之應用程式",
 		"newContent": "有新内容可用",

@@ -1,7 +1,7 @@
 import { createContext, type ReactNode, useEffect, useState } from "react";
 import { DateTime } from "luxon";
 
-export type Theme = "dark" | "light" | "system";
+export type Theme = "dark" | "light" | "system" | "scheduled";
 
 type ThemeProviderProps = {
 	children: ReactNode;
@@ -29,13 +29,25 @@ export function ThemeProvider({
 		() => (localStorage.getItem(storageKey) as Theme) || "system",
 	);
 
+	const [isSystemDark, setIsSystemDark] = useState(
+		() => window.matchMedia("(prefers-color-scheme: dark)").matches,
+	);
+
 	const [hour, setHour] = useState(() => DateTime.now().hour);
 
 	useEffect(() => {
 		const timer = setInterval(() => {
 			setHour(DateTime.now().hour);
 		}, 60000);
-		return () => clearInterval(timer);
+
+		const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+		const handler = (e: MediaQueryListEvent) => setIsSystemDark(e.matches);
+		mediaQuery.addEventListener("change", handler);
+
+		return () => {
+			clearInterval(timer);
+			mediaQuery.removeEventListener("change", handler);
+		};
 	}, []);
 
 	useEffect(() => {
@@ -46,6 +58,8 @@ export function ThemeProvider({
 
 		let effectiveTheme = theme;
 		if (theme === "system") {
+			effectiveTheme = isSystemDark ? "dark" : "light";
+		} else if (theme === "scheduled") {
 			// Time-based theme: 18:00 - 06:00 is dark
 			const isNight = hour >= 18 || hour < 6;
 			effectiveTheme = isNight ? "dark" : "light";
@@ -62,7 +76,7 @@ export function ThemeProvider({
 			root.classList.remove("disable-transitions");
 		}, 0);
 		return () => window.clearTimeout(timeoutId);
-	}, [theme, hour]);
+	}, [theme, hour, isSystemDark]);
 
 	const value = {
 		theme,

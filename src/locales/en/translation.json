@@ -19,7 +19,8 @@
 		"offlineServers": "Offline Servers",
 		"totalBandwidth": "Total Bandwidth",
 		"speed": "Speed",
-		"network": "Network"
+		"network": "Network",
+		"totalDomains": "Total Domains"
 	},
 	"map": {
 		"Distributions": "Servers are distributed in",
@@ -100,7 +101,8 @@
 	"theme": {
 		"light": "Light",
 		"dark": "Dark",
-		"system": "System"
+		"system": "System",
+		"scheduled": "Scheduled"
 	},
 	"error": {
 		"pageNotFound": "Page not found",
@@ -144,5 +146,12 @@
 	"ToggleLightMode": "Toggle Light Mode",
 	"ToggleDarkMode": "Toggle Dark Mode",
 	"ToggleSystemMode": "Toggle System Mode",
-	"Home": "Home"
+	"Home": "Home",
+	"domain": {
+		"registrar": "Registrar",
+		"expiryDate": "Expiry Date",
+		"expiryPrefix": "Expires",
+		"days": "Days",
+		"unknownRegistrar": "Unknown Registrar"
+	}
 }

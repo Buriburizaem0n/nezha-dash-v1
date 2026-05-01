@@ -70,6 +70,15 @@ export function ModeToggle() {
 					{t("theme.system")}
 					{theme === "system" && <CheckCircleIcon className="size-4" />}
 				</DropdownMenuItem>
+				<DropdownMenuItem
+					className={cn("rounded-[5px] text-xs", {
+						"gap-3 bg-muted font-semibold": theme === "scheduled",
+					})}
+					onSelect={(e) => handleSelect(e, "scheduled")}
+				>
+					{t("theme.scheduled")}
+					{theme === "scheduled" && <CheckCircleIcon className="size-4" />}
+				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
