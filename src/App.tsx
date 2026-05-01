@@ -96,20 +96,28 @@ const MainApp: React.FC = () => {
 			{customBackgroundImage && (
 				<div
 					className={cn(
-						"fixed inset-0 z-0 bg-cover min-h-lvh bg-no-repeat bg-center dark:brightness-75",
+						"fixed inset-0 z-0 bg-cover w-screen h-screen bg-no-repeat bg-center transition-none dark:brightness-75",
 						{
 							"hidden sm:block": customMobileBackgroundImage,
 						},
 					)}
-					style={{ backgroundImage: `url(${customBackgroundImage})` }}
+					style={{ 
+						backgroundImage: `url(${customBackgroundImage})`,
+						backfaceVisibility: 'hidden',
+						perspective: '1000px'
+					}}
 				/>
 			)}
 			{customMobileBackgroundImage && (
 				<div
 					className={cn(
-						"fixed inset-0 z-0 bg-cover min-h-lvh bg-no-repeat bg-center sm:hidden dark:brightness-75",
+						"fixed inset-0 z-0 bg-cover w-screen h-screen bg-no-repeat bg-center transition-none sm:hidden dark:brightness-75",
 					)}
-					style={{ backgroundImage: `url(${customMobileBackgroundImage})` }}
+					style={{ 
+						backgroundImage: `url(${customMobileBackgroundImage})`,
+						backfaceVisibility: 'hidden',
+						perspective: '1000px'
+					}}
 				/>
 			)}
 			<div
