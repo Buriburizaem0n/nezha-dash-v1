@@ -1,0 +1,137 @@
+{
+  "overview": "Visão geral",
+  "dashboard": "Painel de controle",
+  "whereTheTimeIs": "Onde está a hora",
+  "refreshing": "Atualizando",
+  "info": {
+    "websocketConnecting": "Conectando WebSocket",
+    "websocketConnected": "WebSocket conectado",
+    "websocketDisconnected": "WebSocket desconectado",
+    "processing": "Processando..."
+  },
+  "serverOverview": {
+    "totalServers": "Total de Servidores",
+    "onlineServers": "Servidores Conectados",
+    "offlineServers": "Servidores Desconectados",
+    "totalBandwidth": "Largura de Banda Total",
+    "speed": "Velocidade",
+    "network": "Rede"
+  },
+  "map": {
+    "Distributions": "Servidores estão distribuídos em",
+    "Regions": "Regiões",
+    "Servers": "servidores"
+  },
+  "serverCard": {
+    "mem": "MEM",
+    "stg": "STG",
+    "days": "Dias",
+    "hours": "Horas",
+    "upload": "Upload",
+    "download": "Download",
+    "system": "Sistema",
+    "uptime": "Disponibilidade",
+    "totalUpload": "Envio total",
+    "totalDownload": "Recebimento total"
+  },
+  "nezha": "Nezha Monitoramento",
+  "login": "Login",
+  "online": "Online",
+  "offline": "Offline",
+  "cycleTransfer": {
+    "used": "Usado",
+    "total": "Total",
+    "nextUpdate": "Próxima atualização"
+  },
+  "serviceTracker": {
+    "noService": "Sem dados do serviço",
+    "uptime": "Disponibilidade",
+    "delay": "Atraso",
+    "daysAgo": "Dias anteriores",
+    "today": "Hoje",
+    "loading": "Carregando..."
+  },
+  "serverDetail": {
+    "status": "Status",
+    "online": "Online",
+    "days": "Dias",
+    "hours": "Horas",
+    "offline": "Offline",
+    "unknown": "Desconhecido",
+    "uptime": "Disponibilidade",
+    "version": "Versão",
+    "arch": "Arquitetura",
+    "mem": "Memória",
+    "disk": "Armazenamento",
+    "region": "Região",
+    "system": "Sistema",
+    "upload": "Envio",
+    "download": "Recebimento",
+    "lastActive": "Ultima atividade",
+    "temperature": "Temperatura",
+    "bootTime": "Tempo de inicio"
+  },
+  "serverDetailChart": {
+    "process": "Processo",
+    "disk": "Armazenamento",
+    "mem": "Memória",
+    "swap": "Swap",
+    "upload": "Envio",
+    "download": "Recebimento"
+  },
+  "footer": {
+    "themeBy": "Tema por "
+  },
+  "language": {
+    "zh-CN": "Chinês simplificado",
+    "zh-TW": "Chinês Tradicional",
+    "en-US": "Inglês",
+    "de-DE": "Alemão",
+    "es-ES": "Espanhol",
+    "ru-RU": "Russo",
+    "ta-IN": "Tamil Indiano"
+  },
+  "theme": {
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema"
+  },
+  "error": {
+    "pageNotFound": "Página não encontrada",
+    "backToHome": "Voltar ao inicio"
+  },
+  "tabSwitch": {
+    "Detail": "Detalhes",
+    "Network": "Rede"
+  },
+  "monitor": {
+    "noData": "Sem servidores para monitorar. por favor adicione um primeiro monitor de serviço",
+    "avgDelay": "Latência",
+    "monitorCount": "Serviços",
+    "packetLoss": "Perda de pacotes",
+    "clearSelections": "Limpar"
+  },
+  "pwa": {
+    "offlineReady": "Aplicativo pronto para funcionar offline",
+    "newContent": "Novo conteúdo disponivel",
+    "reload": "Atualizar"
+  },
+  "billingInfo": {
+    "remaining": "Restante",
+    "error": "Erro",
+    "indefinite": "Indefinido",
+    "expired": "Expirado",
+    "days": "dias",
+    "price": "Preço",
+    "free": "Grátis",
+    "usage-baseed": "Baseado no uso"
+  },
+  "TypeCommand": "Digite um comando ou pesquisa...",
+  "NoResults": "Nenhum resultado encontrado.",
+  "Servers": "Servidores",
+  "Shortcuts": "Atalhos",
+  "ToggleLightMode": "Habilitar tema claro",
+  "ToggleDarkMode": "habilitar tema escuro",
+  "ToggleSystemMode": "Habilitar modo do sistema",
+  "Home": "Inicio"
+}
