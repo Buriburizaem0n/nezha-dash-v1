@@ -129,7 +129,6 @@ describe("interactive app controls", () => {
 					activeView="servers"
 				/>
 
-
 				<StatusReadout />
 			</StatusProvider>,
 		);

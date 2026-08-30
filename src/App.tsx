@@ -10,6 +10,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import Footer from "./components/Footer";
 import Header, { RefreshToast } from "./components/Header";
 import { useBackground } from "./hooks/use-background";
+import { useTheme } from "./hooks/use-theme";
 import { InjectContext } from "./lib/inject";
 import { fetchSetting } from "./lib/nezha-api";
 import { cn } from "./lib/utils";
@@ -39,6 +40,7 @@ const MainApp: React.FC = () => {
 		retry: false,
 	});
 	const { i18n } = useTranslation();
+	const { setTheme } = useTheme();
 	const [isCustomCodeInjected, setIsCustomCodeInjected] = useState(false);
 	const { backgroundImage: customBackgroundImage } = useBackground();
 
@@ -54,7 +56,6 @@ const MainApp: React.FC = () => {
 					InjectContext(config.custom_code);
 					setIsCustomCodeInjected(true);
 				}
-
 
 				// 同步自定义配置到全局变量
 				if (config.custom_logo) window.CustomLogo = config.custom_logo;
@@ -78,6 +79,16 @@ const MainApp: React.FC = () => {
 		const interval = setInterval(updateConfig, 60000); // Check every minute
 		return () => clearInterval(interval);
 	}, [settingData]);
+
+	// 检测是否强制指定了主题颜色
+	const forceTheme =
+		(window.ForceTheme as string) !== "" ? window.ForceTheme : undefined;
+
+	useEffect(() => {
+		if (forceTheme === "dark" || forceTheme === "light") {
+			setTheme(forceTheme);
+		}
+	}, [forceTheme, setTheme]);
 
 	const initialBackendError = !settingData ? toError(error) : null;
 
@@ -108,10 +119,10 @@ const MainApp: React.FC = () => {
 							"hidden sm:block": customMobileBackgroundImage,
 						},
 					)}
-					style={{ 
+					style={{
 						backgroundImage: `url(${customBackgroundImage})`,
-						backfaceVisibility: 'hidden',
-						perspective: '1000px'
+						backfaceVisibility: "hidden",
+						perspective: "1000px",
 					}}
 				/>
 			)}
@@ -120,10 +131,10 @@ const MainApp: React.FC = () => {
 					className={cn(
 						"fixed inset-0 z-0 bg-cover w-screen h-screen bg-no-repeat bg-center transition-none sm:hidden dark:brightness-75",
 					)}
-					style={{ 
+					style={{
 						backgroundImage: `url(${customMobileBackgroundImage})`,
-						backfaceVisibility: 'hidden',
-						perspective: '1000px'
+						backfaceVisibility: "hidden",
+						perspective: "1000px",
 					}}
 				/>
 			)}

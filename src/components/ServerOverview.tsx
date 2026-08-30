@@ -2,14 +2,13 @@ import {
 	ArrowDownCircleIcon,
 	ArrowUpCircleIcon,
 } from "@heroicons/react/20/solid";
+import { Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent } from "@/components/ui/card";
 import { useStatus } from "@/hooks/use-status";
 import { formatBytes } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { Globe } from "lucide-react";
 import NumericText from "./NumericText";
-
 
 type ServerOverviewProps = {
 	online: number;
@@ -20,8 +19,8 @@ type ServerOverviewProps = {
 	upSpeed: number;
 	downSpeed: number;
 	totalDomains: number; // 新增：接收域名总数
-	onViewChange: (view: 'servers' | 'domains') => void; // 新增：点击事件回调
-	activeView: 'servers' | 'domains'; // 新增：当前激活的视图
+	onViewChange: (view: "servers" | "domains") => void; // 新增：点击事件回调
+	activeView: "servers" | "domains"; // 新增：当前激活的视图
 };
 
 export default function ServerOverview({
@@ -51,8 +50,10 @@ export default function ServerOverview({
 			: undefined;
 
 	// 新增：一个组合了两个动作的点击处理函数
-	const handleServerCardClick = (serverStatus: 'all' | 'online' | 'offline') => {
-		onViewChange('servers'); // 动作1: 确保视图切换回服务器
+	const handleServerCardClick = (
+		serverStatus: "all" | "online" | "offline",
+	) => {
+		onViewChange("servers"); // 动作1: 确保视图切换回服务器
 		setStatus(serverStatus); // 动作2: 执行原有的状态筛选
 	};
 
@@ -127,7 +128,6 @@ export default function ServerOverview({
 							activeView === "servers" && status === "offline",
 					},
 				)}
-
 			>
 				<CardContent className="flex h-full items-center px-6 py-3">
 					<section className="flex flex-col gap-1">
@@ -152,13 +152,16 @@ export default function ServerOverview({
 						"bg-card/70": customBackgroundImage,
 					},
 					{
-						"ring-indigo-500 ring-2 border-transparent": activeView === "domains",
+						"ring-indigo-500 ring-2 border-transparent":
+							activeView === "domains",
 					},
 				)}
 			>
 				<CardContent className="flex h-full items-center px-6 py-3">
 					<section className="flex flex-col gap-1">
-						<p className="text-sm font-medium md:text-base">{t("serverOverview.totalDomains")}</p>
+						<p className="text-sm font-medium md:text-base">
+							{t("serverOverview.totalDomains")}
+						</p>
 						<div className="flex items-center gap-2">
 							<Globe className="h-4 w-4 text-muted-foreground" />
 							<div className="text-lg font-semibold">{totalDomains}</div>

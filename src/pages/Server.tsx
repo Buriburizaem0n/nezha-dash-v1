@@ -10,6 +10,8 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { getDomains } from "@/api/domain";
+import { DomainStatus } from "@/components/DomainStatus";
 import GlobalMap from "@/components/GlobalMap";
 import GroupSwitch from "@/components/GroupSwitch";
 import { Loader } from "@/components/loading/Loader";
@@ -24,9 +26,6 @@ import { useWebSocketContext } from "@/hooks/use-websocket-context";
 import { fetchServerGroup, fetchService } from "@/lib/nezha-api";
 import { cn } from "@/lib/utils";
 import type { NezhaServer, ServerGroup } from "@/types/nezha-api";
-import { DomainStatus } from "@/components/DomainStatus";
-import { getDomains } from "@/api/domain";
-
 
 type PreparedServer = {
 	online: boolean;
@@ -128,21 +127,23 @@ export default function Servers({
 	const [currentGroup, setCurrentGroup] = useState<string>("All");
 	const nezhaWsData = lastData;
 
-	const [activeView, setActiveView] = useState<'servers' | 'domains'>('servers');
-	
+	const [activeView, setActiveView] = useState<"servers" | "domains">(
+		"servers",
+	);
+
 	const { data: domains } = useQuery({
-		queryKey: ['domains'],
-		queryFn: getDomains
+		queryKey: ["domains"],
+		queryFn: getDomains,
 	});
 
 	// 当用户点击 "在线" 或 "离线" 或 "总服务器数" 时，status 会改变，我们就自动切回服务器视图
 	useEffect(() => {
 		// 只有在 status 改变时才触发，避免无限循环
-		const currentStatus = status || 'all';
-		if(currentStatus !== 'all' || activeView === 'domains') {
-			setActiveView('servers');
+		const currentStatus = status || "all";
+		if (currentStatus !== "all" || activeView === "domains") {
+			setActiveView("servers");
 		}
-	}, [status]);
+	}, [status, activeView]);
 
 	const customBackgroundImage =
 		(window.CustomBackgroundImage as string) !== ""
@@ -553,7 +554,9 @@ export default function Servers({
 						>
 							<button
 								aria-label="Toggle sort direction"
-								onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+								onClick={() =>
+									setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+								}
 								disabled={sortType === "default"}
 								className="flex h-full cursor-pointer items-center gap-1.5 px-3 disabled:cursor-not-allowed disabled:opacity-40"
 							>
@@ -571,7 +574,9 @@ export default function Servers({
 									{t("sort.label")}
 								</span>
 							</button>
-							<span className="text-stone-300 dark:text-stone-600 mb-0.5">|</span>
+							<span className="text-stone-300 dark:text-stone-600 mb-0.5">
+								|
+							</span>
 							<span className="relative ml-2 mr-3.25 inline-flex items-center">
 								<span
 									className="pointer-events-none select-none opacity-0 text-sm font-medium whitespace-nowrap"
@@ -643,4 +648,3 @@ export default function Servers({
 		</div>
 	);
 }
-

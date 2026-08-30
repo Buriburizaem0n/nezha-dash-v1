@@ -1,5 +1,5 @@
-import { createContext, type ReactNode, useEffect, useState } from "react";
 import { DateTime } from "luxon";
+import { createContext, type ReactNode, useEffect, useState } from "react";
 
 export type Theme = "dark" | "light" | "system" | "scheduled";
 
@@ -41,7 +41,8 @@ export function ThemeProvider({
 		}, 60000);
 
 		const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-		const handler = (e: MediaQueryListEvent) => setIsSystemDark(e.matches);
+		const handler = (e?: MediaQueryListEvent) =>
+			setIsSystemDark(e?.matches ?? mediaQuery.matches);
 		mediaQuery.addEventListener("change", handler);
 
 		return () => {
@@ -54,7 +55,6 @@ export function ThemeProvider({
 		const root = window.document.documentElement;
 
 		const updateThemeColor = (nextTheme: "light" | "dark") => {
-
 			const themeColor =
 				nextTheme === "dark" ? "hsl(30 15% 8%)" : "hsl(0 0% 98%)";
 			document
@@ -93,7 +93,6 @@ export function ThemeProvider({
 			window.clearTimeout(timeoutId);
 		};
 	}, [theme, hour, isSystemDark]);
-
 
 	const value = {
 		theme,

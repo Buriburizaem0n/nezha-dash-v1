@@ -201,10 +201,15 @@
 		/* font-feature-settings: "rlig" 1, "calt" 1; */
 		font-synthesis-weight: none;
 		text-rendering: optimizeLegibility;
-		font-family: 'LXGW WenKai Screen', sans-serif;
+		font-family: "LXGW WenKai Screen", sans-serif;
 	}
-	h1, h2, h3, h4, h5, h6 {
-		font-family: 'LXGW WenKai Screen', sans-serif;
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		font-family: "LXGW WenKai Screen", sans-serif;
 	}
 }
 
@@ -438,19 +443,21 @@
 
 /* Custom background overlays */
 .bg-cover::after {
-	content: '';
+	content: "";
 	position: absolute;
 	inset: 0;
 	pointer-events: none;
-	transition: backdrop-filter 0.3s ease, background 0.3s ease;
+	transition:
+		backdrop-filter 0.3s ease,
+		background 0.3s ease;
 }
 
 .dark .bg-cover::after {
 	backdrop-filter: blur(8px);
-	background: rgba(0, 0, 0, .6);
+	background: rgba(0, 0, 0, 0.6);
 }
 
 .light .bg-cover::after {
 	backdrop-filter: blur(0);
-	background: rgba(255, 255, 255, .3);
+	background: rgba(255, 255, 255, 0.3);
 }
