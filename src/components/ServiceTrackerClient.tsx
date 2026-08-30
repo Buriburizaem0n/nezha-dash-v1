@@ -95,14 +95,14 @@ export const ServiceTrackerClient: React.FC<ServiceTrackerProps> = ({
 				</div>
 			</div>
 
-			<div className="flex gap-[3px] bg-muted/30 p-1 rounded-lg">
+			<div className="flex gap-[3px] p-1 rounded-lg">
 				{days.map((day, index) => (
 					<TooltipProvider delayDuration={50} key={index}>
 						<Tooltip>
 							<TooltipTrigger asChild>
 								<div
 									className={cn(
-										"relative flex-1 h-7 rounded-[4px] transition-all duration-200 cursor-help",
+										"relative flex-1 h-7 rounded-[8px] transition-all duration-200 cursor-help",
 										"before:absolute before:inset-0 before:rounded-[4px] before:opacity-0 hover:before:opacity-100 before:bg-white/10 before:transition-opacity",
 										"after:absolute after:inset-0 after:rounded-[4px] after:shadow-[inset_0_1px_--theme(--color-white/10%)]",
 										day.completed
@@ -111,7 +111,7 @@ export const ServiceTrackerClient: React.FC<ServiceTrackerProps> = ({
 									)}
 								/>
 							</TooltipTrigger>
-							<TooltipContent className="p-0 overflow-hidden">
+							<TooltipContent className="p-0 overflow-hidden rounded-[10px]">
 								<div className="px-3 py-2 bg-popover">
 									<p className="font-medium text-sm mb-2">
 										{day.date?.toLocaleDateString()}

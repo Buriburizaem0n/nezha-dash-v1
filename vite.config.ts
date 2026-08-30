@@ -1,8 +1,8 @@
 import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
-import react from '@vitejs/plugin-react'
-import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vitest/config";
 
 // Get git commit hash
 const getGitHash = () => {
@@ -63,7 +63,46 @@ export default defineConfig({
 			Pragma: "no-cache",
 		},
 	},
+	test: {
+		environment: "jsdom",
+		environmentOptions: {
+			jsdom: {
+				url: "https://localhost/",
+			},
+		},
+		globals: true,
+		setupFiles: ["./src/test/setup.ts"],
+		css: true,
+		include: ["src/test/**/*.{test,spec}.{ts,tsx}"],
+		coverage: {
+			provider: "v8",
+			reporter: ["text", "html", "lcov"],
+			reportsDirectory: "./coverage",
+			thresholds: {
+				statements: 86,
+				branches: 74,
+				functions: 86,
+				lines: 86,
+			},
+			include: ["src/**/*.{ts,tsx}"],
+			exclude: [
+				"src/**/*.test.{ts,tsx}",
+				"src/**/*.spec.{ts,tsx}",
+				"src/test/**",
+				"src/types/**",
+				"src/main.tsx",
+				"src/i18n.js",
+				"src/vite-env.d.ts",
+			],
+		},
+	},
 	build: {
+		// Target older Safari versions (iOS 15/16) explicitly, since Vite's
+		// default "widely-available browsers" target only covers the latest
+		// two major Safari releases and would otherwise emit syntax that
+		// crashes on older WebKit engines (white screen on load).
+		target: ["es2020", "safari15"],
+		cssTarget: ["safari15"],
 		rolldownOptions: {
 			output: {
 				entryFileNames: `assets/[name].[hash].js`,

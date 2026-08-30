@@ -53,30 +53,47 @@ export function ThemeProvider({
 	useEffect(() => {
 		const root = window.document.documentElement;
 
-		root.classList.add("disable-transitions");
-		root.classList.remove("light", "dark");
+		const updateThemeColor = (nextTheme: "light" | "dark") => {
 
-		let effectiveTheme = theme;
+			const themeColor =
+				nextTheme === "dark" ? "hsl(30 15% 8%)" : "hsl(0 0% 98%)";
+			document
+				.querySelector('meta[name="theme-color"]')
+				?.setAttribute("content", themeColor);
+		};
+
+		const applyTheme = (nextTheme: "light" | "dark") => {
+			root.classList.remove("light", "dark");
+			root.classList.add(nextTheme);
+			root.style.colorScheme = nextTheme;
+			root.style.backgroundColor =
+				nextTheme === "dark" ? "hsl(30 15% 8%)" : "hsl(0 0% 98%)";
+			updateThemeColor(nextTheme);
+		};
+
+		root.classList.add("disable-transitions");
+
+		let effectiveTheme: "light" | "dark" = "light";
 		if (theme === "system") {
 			effectiveTheme = isSystemDark ? "dark" : "light";
 		} else if (theme === "scheduled") {
-			// Time-based theme: 18:00 - 06:00 is dark
 			const isNight = hour >= 18 || hour < 6;
 			effectiveTheme = isNight ? "dark" : "light";
+		} else {
+			effectiveTheme = theme;
 		}
 
-		root.classList.add(effectiveTheme);
-		const themeColor =
-			effectiveTheme === "dark" ? "hsl(30 15% 8%)" : "hsl(0 0% 98%)";
-		document
-			.querySelector('meta[name="theme-color"]')
-			?.setAttribute("content", themeColor);
-		
+		applyTheme(effectiveTheme);
+
 		const timeoutId = window.setTimeout(() => {
 			root.classList.remove("disable-transitions");
 		}, 0);
-		return () => window.clearTimeout(timeoutId);
+
+		return () => {
+			window.clearTimeout(timeoutId);
+		};
 	}, [theme, hour, isSystemDark]);
+
 
 	const value = {
 		theme,

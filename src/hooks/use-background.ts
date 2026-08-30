@@ -8,6 +8,8 @@ declare global {
 		ForceCardInline: boolean;
 		ForceShowMap: boolean;
 		ForcePeakCutEnabled: boolean;
+		ForceSortType?: string;
+		ForceSortOrder?: string;
 	}
 }
 

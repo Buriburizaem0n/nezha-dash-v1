@@ -8,6 +8,8 @@ import { useStatus } from "@/hooks/use-status";
 import { formatBytes } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { Globe } from "lucide-react";
+import NumericText from "./NumericText";
+
 
 type ServerOverviewProps = {
 	online: number;
@@ -60,9 +62,12 @@ export default function ServerOverview({
 				onClick={() => {
 					handleServerCardClick("all");
 				}}
-				className={cn("hover:border-blue-500 cursor-pointer transition-all", {
-					"bg-card/70": customBackgroundImage,
-				})}
+				className={cn(
+					"group cursor-pointer transition-all hover:ring-blue-500 dark:hover:ring-blue-600",
+					{
+						"bg-card/70": customBackgroundImage,
+					},
+				)}
 			>
 				<CardContent className="flex h-full items-center px-6 py-3">
 					<section className="flex flex-col gap-1">
@@ -73,7 +78,7 @@ export default function ServerOverview({
 							<span className="relative flex h-2 w-2">
 								<span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500"></span>
 							</span>
-							<div className="text-lg font-semibold">{total}</div>
+							<NumericText value={total} className="text-lg font-semibold" />
 						</div>
 					</section>
 				</CardContent>
@@ -83,12 +88,13 @@ export default function ServerOverview({
 					handleServerCardClick("online");
 				}}
 				className={cn(
-					"cursor-pointer hover:ring-green-500 ring-1 ring-transparent transition-all",
+					"cursor-pointer ring-1 transition-all hover:ring-green-500 dark:hover:ring-green-600",
 					{
 						"bg-card/70": customBackgroundImage,
 					},
 					{
-						"ring-green-500 ring-2 border-transparent": activeView === "servers" && status === "online",
+						"border-transparent ring-2 ring-green-500 dark:ring-green-600":
+							activeView === "servers" && status === "online",
 					},
 				)}
 			>
@@ -102,8 +108,7 @@ export default function ServerOverview({
 								<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
 								<span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
 							</span>
-
-							<div className="text-lg font-semibold">{online}</div>
+							<NumericText value={online} className="text-lg font-semibold" />
 						</div>
 					</section>
 				</CardContent>
@@ -113,14 +118,16 @@ export default function ServerOverview({
 					handleServerCardClick("offline");
 				}}
 				className={cn(
-					"cursor-pointer hover:ring-red-500 ring-1 ring-transparent transition-all",
+					"cursor-pointer ring-1 transition-all hover:ring-red-500 dark:hover:ring-red-600",
 					{
 						"bg-card/70": customBackgroundImage,
 					},
 					{
-						"ring-red-500 ring-2 border-transparent": activeView === "servers" && status === "offline",
+						"border-transparent ring-2 ring-red-500 dark:ring-red-600":
+							activeView === "servers" && status === "offline",
 					},
 				)}
+
 			>
 				<CardContent className="flex h-full items-center px-6 py-3">
 					<section className="flex flex-col gap-1">
@@ -132,7 +139,7 @@ export default function ServerOverview({
 								<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75"></span>
 								<span className="relative inline-flex h-2 w-2 rounded-full bg-red-500"></span>
 							</span>
-							<div className="text-lg font-semibold">{offline}</div>
+							<NumericText value={offline} className="text-lg font-semibold" />
 						</div>
 					</section>
 				</CardContent>
@@ -161,7 +168,7 @@ export default function ServerOverview({
 			</Card>
 			<Card
 				className={cn(
-					"hover:ring-purple-500 ring-1 ring-transparent transition-all",
+					"group ring-1 hover:ring-purple-500 dark:hover:ring-purple-600",
 					{
 						"bg-card/70": customBackgroundImage,
 					},
@@ -175,12 +182,14 @@ export default function ServerOverview({
 							</p>
 						</div>
 						<section className="flex items-start flex-row z-10 pr-0 gap-1">
-							<p className="sm:text-[12px] text-[10px] text-blue-800 dark:text-blue-400   text-nowrap font-medium">
-								↑{formatBytes(up)}
-							</p>
-							<p className="sm:text-[12px] text-[10px]  text-purple-800 dark:text-purple-400  text-nowrap font-medium">
-								↓{formatBytes(down)}
-							</p>
+							<NumericText
+								value={`↑${formatBytes(up)}`}
+								className="sm:text-[12px] text-[10px] text-blue-800 dark:text-blue-400  text-nowrap font-medium"
+							/>
+							<NumericText
+								value={`↓${formatBytes(down)}`}
+								className="sm:text-[12px] text-[10px]  text-purple-800 dark:text-purple-400  text-nowrap font-medium"
+							/>
 						</section>
 						<section className="flex flex-col sm:flex-row -mr-1 sm:items-center items-start gap-1">
 							<p className="text-[11px] flex items-center text-nowrap font-semibold">

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import ServerFlag from "@/components/ServerFlag";
@@ -8,6 +9,7 @@ import {
 	GetOsName,
 	MageMicrosoftWindows,
 } from "@/lib/logo-class";
+import { saveMainPageScrollPosition } from "@/lib/navigation";
 import { cn, formatNezhaInfo, parsePublicNote } from "@/lib/utils";
 import type { NezhaServer } from "@/types/nezha-api";
 import BillingInfo from "./billingInfo";
@@ -15,7 +17,7 @@ import PlanInfo from "./PlanInfo";
 import { Badge } from "./ui/badge";
 import { Card } from "./ui/card";
 
-export default function ServerCard({
+function ServerCard({
 	now,
 	serverInfo,
 }: {
@@ -40,7 +42,7 @@ export default function ServerCard({
 	} = formatNezhaInfo(now, serverInfo);
 
 	const cardClick = () => {
-		sessionStorage.setItem("fromMainPage", "true");
+		saveMainPageScrollPosition();
 		navigate(`/server/${serverInfo.id}`);
 	};
 
@@ -62,7 +64,7 @@ export default function ServerCard({
 	return online ? (
 		<Card
 			className={cn(
-				"flex flex-col items-center justify-start gap-3 p-3 md:px-5 cursor-pointer hover:bg-accent/50 transition-colors",
+				"flex cursor-pointer flex-col items-center justify-start gap-3 p-3 transition-all hover:shadow-sm hover:ring-stone-300 md:px-5 dark:hover:ring-stone-700",
 				{
 					"flex-col": fixedTopServerName,
 					"lg:flex-row": !fixedTopServerName,
@@ -278,3 +280,5 @@ export default function ServerCard({
 		</Card>
 	);
 }
+
+export default memo(ServerCard);

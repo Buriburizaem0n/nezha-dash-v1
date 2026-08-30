@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import ServerFlag from "@/components/ServerFlag";
@@ -8,6 +9,7 @@ import {
 	GetOsName,
 	MageMicrosoftWindows,
 } from "@/lib/logo-class";
+import { saveMainPageScrollPosition } from "@/lib/navigation";
 import { cn, formatNezhaInfo, parsePublicNote } from "@/lib/utils";
 import type { NezhaServer } from "@/types/nezha-api";
 import BillingInfo from "./billingInfo";
@@ -15,7 +17,7 @@ import PlanInfo from "./PlanInfo";
 import { Card } from "./ui/card";
 import { Separator } from "./ui/separator";
 
-export default function ServerCardInline({
+function ServerCardInline({
 	now,
 	serverInfo,
 }: {
@@ -41,7 +43,7 @@ export default function ServerCardInline({
 	} = formatNezhaInfo(now, serverInfo);
 
 	const cardClick = () => {
-		sessionStorage.setItem("fromMainPage", "true");
+		saveMainPageScrollPosition();
 		navigate(`/server/${serverInfo.id}`);
 	};
 
@@ -58,7 +60,7 @@ export default function ServerCardInline({
 		<section>
 			<Card
 				className={cn(
-					"flex items-center lg:flex-row justify-start gap-3 p-3 md:px-5 cursor-pointer hover:bg-accent/50 transition-colors min-w-[900px] w-full",
+					"flex w-full min-w-[900px] cursor-pointer items-center justify-start gap-3 p-3 transition-all hover:shadow-sm hover:ring-stone-300 md:px-5 lg:flex-row dark:hover:ring-stone-700",
 					{
 						"bg-card/70": customBackgroundImage,
 					},
@@ -238,3 +240,5 @@ export default function ServerCardInline({
 		</Card>
 	);
 }
+
+export default memo(ServerCardInline);

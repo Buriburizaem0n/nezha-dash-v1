@@ -53,7 +53,9 @@
 		"websocketConnecting": "WebSocket подключение",
 		"websocketConnected": "WebSocket подключен",
 		"websocketDisconnected": "WebSocket отключен",
-		"processing": "Обработка..."
+		"processing": "Обработка...",
+		"noServers": "Нет доступных серверов",
+		"noMatchingServers": "Нет серверов, соответствующих текущим фильтрам"
 	},
 	"cycleTransfer": {
 		"nextUpdate": "следующее обновление",
@@ -141,5 +143,21 @@
 		"themeBy": "Тема от "
 	},
 	"NoResults": "Ничего не найдено.",
-	"nezha": "Nezha Monitoring"
+	"nezha": "Nezha Monitoring",
+	"sort": {
+		"label": "Сортировка",
+		"types": {
+			"default": "По умолчанию",
+			"name": "Имя",
+			"uptime": "Аптайм",
+			"system": "Система",
+			"cpu": "CPU",
+			"mem": "Память",
+			"disk": "Диск",
+			"up": "Загрузка",
+			"down": "Скачивание",
+			"up_total": "Загружено",
+			"down_total": "Скачано"
+		}
+	}
 }

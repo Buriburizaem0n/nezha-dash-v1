@@ -11,7 +11,9 @@
 		"websocketConnecting": "WebSocket 連線中",
 		"websocketConnected": "WebSocket 連線成功",
 		"websocketDisconnected": "WebSocket 連線中斷",
-		"processing": "處理中..."
+		"processing": "處理中...",
+		"noServers": "暫無伺服器",
+		"noMatchingServers": "沒有符合目前篩選條件的伺服器"
 	},
 	"serverOverview": {
 		"totalServers": "總伺服器",
@@ -100,7 +102,9 @@
 	},
 	"error": {
 		"pageNotFound": "頁面不存在",
-		"backToHome": "回到主頁"
+		"backToHome": "回到主頁",
+		"backendUnavailableTitle": "後端 API 無法存取",
+		"backendUnavailableDescription": "頁面仍會正常顯示，但暫時無法載入監控資料。"
 	},
 	"tabSwitch": {
 		"detail": "詳細資訊",
@@ -149,5 +153,24 @@
 		"offlineReady": "可離線使用之應用程式",
 		"newContent": "有新内容可用",
 		"reload": "更新"
+	},
+	"sort": {
+		"label": "排序",
+		"types": {
+			"default": "預設",
+			"name": "名稱",
+			"uptime": "運行時間",
+			"system": "系統",
+			"cpu": "CPU",
+			"mem": "記憶體",
+			"disk": "磁碟",
+			"up": "上傳",
+			"down": "下載",
+			"up_total": "上傳總量",
+			"down_total": "下載總量"
+		}
+	},
+	"group": {
+		"all": "全部"
 	}
 }

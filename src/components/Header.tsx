@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { AnimatePresence, m } from "framer-motion";
 import { ImageMinus } from "lucide-react";
 import { DateTime } from "luxon";
 import { useEffect, useRef, useState } from "react";
@@ -16,6 +15,7 @@ import { cn } from "@/lib/utils";
 import AnimateCountClient from "./AnimatedCount";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Loader, LoadingSpinner } from "./loading/Loader";
+import NumericText from "./NumericText";
 import { SearchButton } from "./SearchButton";
 import { Button } from "./ui/button";
 
@@ -58,15 +58,12 @@ function Header() {
 		queryFn: () => fetchSetting(),
 		refetchOnMount: true,
 		refetchOnWindowFocus: true,
+		retry: false,
 	});
 
-	const { lastMessage, connected } = useWebSocketContext();
+	const { lastData, connected } = useWebSocketContext();
 
-	const onlineCount = connected
-		? lastMessage
-			? JSON.parse(lastMessage.data).online || 0
-			: 0
-		: "...";
+	const onlineCount = connected ? (lastData ? lastData.online || 0 : 0) : "...";
 
 	const siteName = settingData?.data?.config?.site_name;
 
@@ -179,7 +176,11 @@ function Header() {
 							},
 						)}
 					>
-						{connected ? onlineCount : <Loader visible={true} />}
+						{connected ? (
+							<NumericText value={onlineCount} />
+						) : (
+							<Loader visible={true} />
+						)}
 						<p className="text-muted-foreground">
 							{connected ? t("online") : t("offline")}
 						</p>
@@ -205,10 +206,29 @@ type links = {
 	name: string;
 };
 
+function parseCustomLinks(customLinks: string | undefined): links[] | null {
+	if (!customLinks) return null;
+
+	try {
+		const parsedLinks = JSON.parse(customLinks);
+
+		if (!Array.isArray(parsedLinks)) {
+			return null;
+		}
+
+		return parsedLinks.filter(
+			(link): link is links =>
+				typeof link?.link === "string" && typeof link?.name === "string",
+		);
+	} catch {
+		return null;
+	}
+}
+
 function Links() {
 	const customLinks = window.CustomLinks as string;
 
-	const links: links[] | null = customLinks ? JSON.parse(customLinks) : null;
+	const links = parseCustomLinks(customLinks);
 
 	if (!links) return null;
 
@@ -249,20 +269,12 @@ export function RefreshToast() {
 	}
 
 	return (
-		<AnimatePresence>
-			<m.div
-				initial={{ opacity: 0, filter: "blur(10px)", scale: 0.8 }}
-				animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
-				exit={{ opacity: 0, filter: "blur(10px)", scale: 0.8 }}
-				transition={{ type: "spring", duration: 0.8 }}
-				className="fixed left-1/2 -translate-x-1/2 top-8 z-999 flex items-center justify-between gap-4 rounded-[50px] border border-solid bg-white px-2 py-1.5 shadow-xl shadow-black/5 dark:border-stone-700 dark:bg-stone-800 dark:shadow-none"
-			>
-				<section className="flex items-center gap-1.5">
-					<LoadingSpinner />
-					<p className="text-[12.5px] font-medium">{t("refreshing")}...</p>
-				</section>
-			</m.div>
-		</AnimatePresence>
+		<div className="refresh-toast-animate fixed left-1/2 -translate-x-1/2 top-8 z-999 flex items-center justify-between gap-4 rounded-[50px] border border-solid bg-white px-2 py-1.5 shadow-xl shadow-black/5 dark:border-stone-700 dark:bg-stone-800 dark:shadow-none">
+			<section className="flex items-center gap-1.5">
+				<LoadingSpinner />
+				<p className="text-[12.5px] font-medium">{t("refreshing")}...</p>
+			</section>
+		</div>
 	);
 }
 

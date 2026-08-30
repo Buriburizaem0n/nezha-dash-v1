@@ -11,7 +11,9 @@
 		"websocketConnecting": "WebSocket 连接中",
 		"websocketConnected": "WebSocket 连接成功",
 		"websocketDisconnected": "WebSocket 连接断开",
-		"processing": "处理中..."
+		"processing": "处理中...",
+		"noServers": "暂无服务器",
+		"noMatchingServers": "没有符合当前筛选条件的服务器"
 	},
 	"serverOverview": {
 		"totalServers": "服务器总数",
@@ -107,7 +109,9 @@
 	},
 	"error": {
 		"pageNotFound": "页面不存在",
-		"backToHome": "回到主页"
+		"backToHome": "回到主页",
+		"backendUnavailableTitle": "后端 API 无法访问",
+		"backendUnavailableDescription": "页面仍会正常显示，但暂时无法加载监控数据。"
 	},
 	"tabSwitch": {
 		"Detail": "详情",
@@ -154,5 +158,25 @@
 		"expiryPrefix": "到期",
 		"days": "天",
 		"unknownRegistrar": "未知注册商"
+	},
+	"sort": {
+		"label": "排序",
+		"types": {
+			"default": "默认",
+			"name": "名称",
+			"uptime": "运行时间",
+			"system": "系统",
+			"cpu": "CPU",
+			"mem": "内存",
+			"disk": "磁盘",
+			"up": "上传",
+			"down": "下载",
+			"up_total": "上传总量",
+			"down_total": "下载总量"
+		}
+	},
+	"group": {
+		"all": "全部"
 	}
 }
+

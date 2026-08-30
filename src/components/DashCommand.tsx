@@ -1,7 +1,7 @@
 "use client";
 
 import { Home, Moon, Sun, SunMoon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import {
@@ -16,8 +16,8 @@ import {
 import { useCommand } from "@/hooks/use-command";
 import { useTheme } from "@/hooks/use-theme";
 import { useWebSocketContext } from "@/hooks/use-websocket-context";
+import { saveMainPageScrollPosition } from "@/lib/navigation";
 import { formatNezhaInfo } from "@/lib/utils";
-import type { NezhaWebsocketResponse } from "@/types/nezha-api";
 
 export function DashCommand() {
 	const { isOpen, closeCommand, toggleCommand } = useCommand();
@@ -26,11 +26,9 @@ export function DashCommand() {
 	const { t } = useTranslation();
 	const { setTheme } = useTheme();
 
-	const { lastMessage, connected } = useWebSocketContext();
+	const { lastData, connected } = useWebSocketContext();
 
-	const nezhaWsData = lastMessage
-		? (JSON.parse(lastMessage.data) as NezhaWebsocketResponse)
-		: null;
+	const nezhaWsData = lastData;
 
 	useEffect(() => {
 		const down = (e: KeyboardEvent) => {
@@ -44,37 +42,51 @@ export function DashCommand() {
 		return () => document.removeEventListener("keydown", down);
 	}, [toggleCommand]);
 
-	if (!connected || !nezhaWsData) return null;
+	const shortcuts = useMemo(
+		() =>
+			[
+				{
+					keywords: ["home", "homepage"],
+					icon: <Home />,
+					label: t("Home"),
+					action: () => navigate("/"),
+				},
+				{
+					keywords: ["light", "theme", "lightmode"],
+					icon: <Sun />,
+					label: t("ToggleLightMode"),
+					action: () => setTheme("light"),
+				},
+				{
+					keywords: ["dark", "theme", "darkmode"],
+					icon: <Moon />,
+					label: t("ToggleDarkMode"),
+					action: () => setTheme("dark"),
+				},
+				{
+					keywords: ["system", "theme", "systemmode"],
+					icon: <SunMoon />,
+					label: t("ToggleSystemMode"),
+					action: () => setTheme("system"),
+				},
+			].map((item) => ({
+				...item,
+				value: `${item.keywords.join(" ")} ${item.label}`,
+			})),
+		[navigate, setTheme, t],
+	);
 
-	const shortcuts = [
-		{
-			keywords: ["home", "homepage"],
-			icon: <Home />,
-			label: t("Home"),
-			action: () => navigate("/"),
-		},
-		{
-			keywords: ["light", "theme", "lightmode"],
-			icon: <Sun />,
-			label: t("ToggleLightMode"),
-			action: () => setTheme("light"),
-		},
-		{
-			keywords: ["dark", "theme", "darkmode"],
-			icon: <Moon />,
-			label: t("ToggleDarkMode"),
-			action: () => setTheme("dark"),
-		},
-		{
-			keywords: ["system", "theme", "systemmode"],
-			icon: <SunMoon />,
-			label: t("ToggleSystemMode"),
-			action: () => setTheme("system"),
-		},
-	].map((item) => ({
-		...item,
-		value: `${item.keywords.join(" ")} ${item.label}`,
-	}));
+	const serverCommands = useMemo(() => {
+		if (!isOpen || !nezhaWsData) return [];
+
+		return (nezhaWsData.servers ?? []).map((server) => ({
+			id: server.id,
+			name: server.name,
+			online: formatNezhaInfo(nezhaWsData.now, server).online,
+		}));
+	}, [isOpen, nezhaWsData]);
+
+	if (!connected || !nezhaWsData) return null;
 
 	return (
 		<CommandDialog open={isOpen} onOpenChange={closeCommand}>
@@ -85,18 +97,19 @@ export function DashCommand() {
 			/>
 			<CommandList className="border-t">
 				<CommandEmpty>{t("NoResults")}</CommandEmpty>
-				{nezhaWsData.servers && nezhaWsData.servers.length > 0 && (
+				{serverCommands.length > 0 && (
 					<CommandGroup heading={t("Servers")}>
-						{nezhaWsData.servers.map((server) => (
+						{serverCommands.map((server) => (
 							<CommandItem
 								key={server.id}
 								value={server.name}
 								onSelect={() => {
+									saveMainPageScrollPosition();
 									navigate(`/server/${server.id}`);
 									closeCommand();
 								}}
 							>
-								{formatNezhaInfo(nezhaWsData.now, server).online ? (
+								{server.online ? (
 									<span className="h-2 w-2 shrink-0 rounded-full bg-green-500 self-center" />
 								) : (
 									<span className="h-2 w-2 shrink-0 rounded-full bg-red-500 self-center" />

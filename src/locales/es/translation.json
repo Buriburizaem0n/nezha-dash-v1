@@ -127,7 +127,9 @@
 		"websocketConnecting": "Conexión WebSocket",
 		"websocketDisconnected": "WebSocket desconectado",
 		"websocketConnected": "WebSocket conectado",
-		"processing": "Procesando..."
+		"processing": "Procesando...",
+		"noServers": "No hay servidores disponibles",
+		"noMatchingServers": "Ningún servidor coincide con los filtros actuales"
 	},
 	"NoResults": "No se encontraron resultados.",
 	"refreshing": "Actualizando",
@@ -137,5 +139,21 @@
 	"ToggleSystemMode": "Activar modo del sistema",
 	"footer": {
 		"themeBy": "Tema por. "
+	},
+	"sort": {
+		"label": "Ordenar",
+		"types": {
+			"default": "Predeterminado",
+			"name": "Nombre",
+			"uptime": "Tiempo activo",
+			"system": "Sistema",
+			"cpu": "CPU",
+			"mem": "Memoria",
+			"disk": "Disco",
+			"up": "Subida",
+			"down": "Bajada",
+			"up_total": "Subida total",
+			"down_total": "Bajada total"
+		}
 	}
 }

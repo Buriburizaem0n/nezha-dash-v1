@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { DateTime } from "luxon";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
@@ -14,13 +14,20 @@ import { InjectContext } from "./lib/inject";
 import { fetchSetting } from "./lib/nezha-api";
 import { cn } from "./lib/utils";
 import ErrorPage from "./pages/ErrorPage";
-import NotFound from "./pages/NotFound";
 import Server from "./pages/Server";
-import ServerDetail from "./pages/ServerDetail";
+
+const NotFound = lazy(() => import("./pages/NotFound"));
+const loadServerDetail = () => import("./pages/ServerDetail");
+const ServerDetail = lazy(loadServerDetail);
 
 // Route checker component
 const RouteChecker: React.FC = () => {
 	return <MainApp />;
+};
+
+const toError = (error: unknown) => {
+	if (!error) return null;
+	return error instanceof Error ? error : new Error(String(error));
 };
 
 const MainApp: React.FC = () => {
@@ -29,10 +36,15 @@ const MainApp: React.FC = () => {
 		queryFn: () => fetchSetting(),
 		refetchOnMount: true,
 		refetchOnWindowFocus: true,
+		retry: false,
 	});
 	const { i18n } = useTranslation();
 	const [isCustomCodeInjected, setIsCustomCodeInjected] = useState(false);
 	const { backgroundImage: customBackgroundImage } = useBackground();
+
+	useEffect(() => {
+		loadServerDetail();
+	}, []);
 
 	useEffect(() => {
 		const updateConfig = () => {
@@ -42,6 +54,7 @@ const MainApp: React.FC = () => {
 					InjectContext(config.custom_code);
 					setIsCustomCodeInjected(true);
 				}
+
 
 				// 同步自定义配置到全局变量
 				if (config.custom_logo) window.CustomLogo = config.custom_logo;
@@ -66,13 +79,7 @@ const MainApp: React.FC = () => {
 		return () => clearInterval(interval);
 	}, [settingData]);
 
-	if (error) {
-		return <ErrorPage code={500} message={error.message} />;
-	}
-
-	if (!settingData) {
-		return null;
-	}
+	const initialBackendError = !settingData ? toError(error) : null;
 
 	if (settingData?.data?.config?.custom_code && !isCustomCodeInjected) {
 		return null;
@@ -130,10 +137,27 @@ const MainApp: React.FC = () => {
 					<Header />
 					<DashCommand />
 					<Routes>
-						<Route path="/" element={<Server />} />
-						<Route path="/server/:id" element={<ServerDetail />} />
+						<Route
+							path="/"
+							element={<Server backendError={initialBackendError} />}
+						/>
+						<Route
+							path="/server/:id"
+							element={
+								<Suspense fallback={null}>
+									<ServerDetail />
+								</Suspense>
+							}
+						/>
 						<Route path="/error" element={<ErrorPage />} />
-						<Route path="*" element={<NotFound />} />
+						<Route
+							path="*"
+							element={
+								<Suspense fallback={null}>
+									<NotFound />
+								</Suspense>
+							}
+						/>
 					</Routes>
 					<Footer />
 				</main>
