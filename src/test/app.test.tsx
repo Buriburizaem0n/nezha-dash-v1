@@ -89,6 +89,9 @@ describe("App", () => {
 		appMocks.backgroundImage = undefined;
 		appMocks.fetchSetting.mockResolvedValue(settingResponse());
 		appMocks.injectContext.mockResolvedValue(undefined);
+		appMocks.setTheme.mockClear();
+		window.ForceTheme = "";
+		localStorage.clear();
 	});
 
 	it("renders the main shell after settings load and applies global theme/background settings", async () => {
@@ -186,5 +189,17 @@ describe("App", () => {
 		renderApp("/server/42");
 
 		expect(await screen.findByText("server-detail-page")).toBeInTheDocument();
+	});
+
+	it("does not overwrite user-selected theme with ForceTheme if user previously saved a theme", async () => {
+		localStorage.setItem("vite-ui-theme", "light");
+		Object.assign(window, {
+			ForceTheme: "dark",
+		});
+
+		renderApp();
+
+		expect(await screen.findByText("server-page")).toBeInTheDocument();
+		expect(appMocks.setTheme).not.toHaveBeenCalledWith("dark");
 	});
 });

@@ -1,5 +1,12 @@
 import { DateTime } from "luxon";
-import { createContext, type ReactNode, useEffect, useState } from "react";
+import {
+	createContext,
+	type ReactNode,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 
 export type Theme = "dark" | "light" | "system" | "scheduled";
 
@@ -94,13 +101,21 @@ export function ThemeProvider({
 		};
 	}, [theme, hour, isSystemDark]);
 
-	const value = {
-		theme,
-		setTheme: (theme: Theme) => {
-			localStorage.setItem(storageKey, theme);
-			setTheme(theme);
+	const handleSetTheme = useCallback(
+		(nextTheme: Theme) => {
+			localStorage.setItem(storageKey, nextTheme);
+			setTheme(nextTheme);
 		},
-	};
+		[storageKey],
+	);
+
+	const value = useMemo(
+		() => ({
+			theme,
+			setTheme: handleSetTheme,
+		}),
+		[theme, handleSetTheme],
+	);
 
 	return (
 		<ThemeProviderContext.Provider value={value}>

@@ -52,12 +52,32 @@ vi.mock("@/components/ServerOverview", () => ({
 		offline,
 		online,
 		total,
+		onViewChange,
 	}: {
 		offline: number;
 		online: number;
 		total: number;
+		totalDomains?: number;
+		onViewChange?: (view: "servers" | "domains") => void;
 	}) => (
-		<div data-testid="server-overview">{`${total}:${online}:${offline}`}</div>
+		<div data-testid="server-overview">
+			<span>{`${total}:${online}:${offline}`}</span>
+			{onViewChange && (
+				<button
+					type="button"
+					data-testid="switch-to-domains"
+					onClick={() => onViewChange("domains")}
+				>
+					domains-view
+				</button>
+			)}
+		</div>
+	),
+}));
+
+vi.mock("@/components/DomainStatus", () => ({
+	DomainStatus: () => (
+		<div data-testid="domain-status">domain-status-content</div>
 	),
 }));
 
@@ -541,5 +561,36 @@ describe("Servers page", () => {
 		expect(screen.getAllByTestId("server-card-inline")).toHaveLength(1);
 		expect(screen.getByText("alpha")).toBeInTheDocument();
 		expect(screen.queryByText("beta")).not.toBeInTheDocument();
+	});
+
+	it("switches to domains view when Total Domains is selected and does not immediately revert", async () => {
+		const online = createServer({ id: 1, name: "alpha" });
+		const user = userEvent.setup();
+
+		renderServerPage({
+			connected: true,
+			lastData: websocketPayload([online]),
+		});
+
+		expect(screen.getByTestId("server-card")).toBeInTheDocument();
+
+		await user.click(screen.getByTestId("switch-to-domains"));
+
+		// Server controls/cards should now be hidden
+		expect(screen.queryByTestId("server-card")).not.toBeInTheDocument();
+		expect(screen.getByTestId("domain-status")).toBeInTheDocument();
+	});
+
+	it("renders sort metric select with id and name attributes", async () => {
+		const online = createServer({ id: 1, name: "alpha" });
+
+		renderServerPage({
+			connected: true,
+			lastData: websocketPayload([online]),
+		});
+
+		const selectElement = screen.getByRole("combobox", { name: "Sort metric" });
+		expect(selectElement).toHaveAttribute("id", "server-sort-metric");
+		expect(selectElement).toHaveAttribute("name", "serverSortMetric");
 	});
 });

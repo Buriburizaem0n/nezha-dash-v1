@@ -91,6 +91,8 @@ export function DashCommand() {
 	return (
 		<CommandDialog open={isOpen} onOpenChange={closeCommand}>
 			<CommandInput
+				id="dash-command-search"
+				name="dashCommandSearch"
 				placeholder={t("TypeCommand")}
 				value={search}
 				onValueChange={setSearch}

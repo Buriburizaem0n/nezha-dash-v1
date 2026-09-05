@@ -13,7 +13,6 @@ export function initCustomConfig() {
 			: "https://loohui.com/wp-content/uploads/images/background_day.jpg";
 
 		window.CustomMobileBackgroundImage = window.CustomBackgroundImage;
-		window.ForceTheme = isNight ? "dark" : "light";
 
 		/* LOGO / 副标题 / 链接 */
 		window.CustomLogo = "https://loohui.com/wp-content/uploads/images/pet.png";

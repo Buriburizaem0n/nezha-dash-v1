@@ -136,12 +136,13 @@ export default function Servers({
 		queryFn: getDomains,
 	});
 
-	// 当用户点击 "在线" 或 "离线" 或 "总服务器数" 时，status 会改变，我们就自动切回服务器视图
+	const prevStatusRef = useRef(status);
 	useEffect(() => {
-		// 只有在 status 改变时才触发，避免无限循环
-		const currentStatus = status || "all";
-		if (currentStatus !== "all" || activeView === "domains") {
-			setActiveView("servers");
+		if (prevStatusRef.current !== status) {
+			prevStatusRef.current = status;
+			if (activeView === "domains") {
+				setActiveView("servers");
+			}
 		}
 	}, [status, activeView]);
 
@@ -586,6 +587,8 @@ export default function Servers({
 								</span>
 								<select
 									aria-label="Sort metric"
+									id="server-sort-metric"
+									name="serverSortMetric"
 									value={sortType}
 									onChange={(e) => {
 										const val = e.target.value as typeof sortType;
