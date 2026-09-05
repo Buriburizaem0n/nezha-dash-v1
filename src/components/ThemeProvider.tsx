@@ -19,11 +19,13 @@ type ThemeProviderProps = {
 type ThemeProviderState = {
 	theme: Theme;
 	setTheme: (theme: Theme) => void;
+	effectiveTheme: "light" | "dark";
 };
 
 const initialState: ThemeProviderState = {
 	theme: "system",
 	setTheme: () => null,
+	effectiveTheme: "light",
 };
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
@@ -58,6 +60,17 @@ export function ThemeProvider({
 		};
 	}, []);
 
+	const effectiveTheme: "light" | "dark" = useMemo(() => {
+		if (theme === "system") {
+			return isSystemDark ? "dark" : "light";
+		}
+		if (theme === "scheduled") {
+			const isNight = hour >= 18 || hour < 6;
+			return isNight ? "dark" : "light";
+		}
+		return theme;
+	}, [theme, isSystemDark, hour]);
+
 	useEffect(() => {
 		const root = window.document.documentElement;
 
@@ -79,17 +92,6 @@ export function ThemeProvider({
 		};
 
 		root.classList.add("disable-transitions");
-
-		let effectiveTheme: "light" | "dark" = "light";
-		if (theme === "system") {
-			effectiveTheme = isSystemDark ? "dark" : "light";
-		} else if (theme === "scheduled") {
-			const isNight = hour >= 18 || hour < 6;
-			effectiveTheme = isNight ? "dark" : "light";
-		} else {
-			effectiveTheme = theme;
-		}
-
 		applyTheme(effectiveTheme);
 
 		const timeoutId = window.setTimeout(() => {
@@ -99,7 +101,7 @@ export function ThemeProvider({
 		return () => {
 			window.clearTimeout(timeoutId);
 		};
-	}, [theme, hour, isSystemDark]);
+	}, [effectiveTheme]);
 
 	const handleSetTheme = useCallback(
 		(nextTheme: Theme) => {
@@ -113,8 +115,9 @@ export function ThemeProvider({
 		() => ({
 			theme,
 			setTheme: handleSetTheme,
+			effectiveTheme,
 		}),
-		[theme, handleSetTheme],
+		[theme, handleSetTheme, effectiveTheme],
 	);
 
 	return (

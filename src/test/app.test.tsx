@@ -9,6 +9,8 @@ const appMocks = vi.hoisted(() => ({
 	fetchSetting: vi.fn(),
 	injectContext: vi.fn(),
 	setTheme: vi.fn(),
+	updateBackground: vi.fn(),
+	effectiveTheme: "light" as "light" | "dark",
 }));
 
 vi.mock("../components/DashCommand", () => ({
@@ -38,11 +40,17 @@ vi.mock("../pages/ServerDetail", () => ({
 }));
 
 vi.mock("../hooks/use-background", () => ({
-	useBackground: () => ({ backgroundImage: appMocks.backgroundImage }),
+	useBackground: () => ({
+		backgroundImage: appMocks.backgroundImage,
+		updateBackground: appMocks.updateBackground,
+	}),
 }));
 
 vi.mock("../hooks/use-theme", () => ({
-	useTheme: () => ({ setTheme: appMocks.setTheme }),
+	useTheme: () => ({
+		setTheme: appMocks.setTheme,
+		effectiveTheme: appMocks.effectiveTheme,
+	}),
 }));
 
 vi.mock("../lib/inject", () => ({
@@ -90,7 +98,11 @@ describe("App", () => {
 		appMocks.fetchSetting.mockResolvedValue(settingResponse());
 		appMocks.injectContext.mockResolvedValue(undefined);
 		appMocks.setTheme.mockClear();
+		appMocks.updateBackground.mockClear();
+		appMocks.effectiveTheme = "light";
 		window.ForceTheme = "";
+		window.CustomBackgroundImageDay = "/day.png";
+		window.CustomBackgroundImageNight = "/night.png";
 		localStorage.clear();
 	});
 
@@ -201,5 +213,56 @@ describe("App", () => {
 
 		expect(await screen.findByText("server-page")).toBeInTheDocument();
 		expect(appMocks.setTheme).not.toHaveBeenCalledWith("dark");
+	});
+
+	it("updates background to day background when effective theme is light", async () => {
+		appMocks.effectiveTheme = "light";
+		window.CustomBackgroundImageDay = "/day.png";
+		window.CustomBackgroundImageNight = "/night.png";
+
+		renderApp();
+
+		await waitFor(() => {
+			expect(appMocks.updateBackground).toHaveBeenCalledWith("/day.png");
+		});
+		expect(window.CustomMobileBackgroundImage).toBe("/day.png");
+	});
+
+	it("updates background to night background when effective theme is dark", async () => {
+		appMocks.effectiveTheme = "dark";
+		window.CustomBackgroundImageDay = "/day.png";
+		window.CustomBackgroundImageNight = "/night.png";
+
+		renderApp();
+
+		await waitFor(() => {
+			expect(appMocks.updateBackground).toHaveBeenCalledWith("/night.png");
+		});
+		expect(window.CustomMobileBackgroundImage).toBe("/night.png");
+	});
+
+	it("applies day and night background images from backend settings config", async () => {
+		appMocks.effectiveTheme = "light";
+		appMocks.fetchSetting.mockResolvedValue({
+			success: true,
+			data: {
+				config: {
+					...settingResponse().data.config,
+					background_image_day: "/backend-day.png",
+					background_image_night: "/backend-night.png",
+				},
+				version: "1.0.0",
+			},
+		});
+
+		renderApp();
+
+		await waitFor(() => {
+			expect(appMocks.updateBackground).toHaveBeenCalledWith(
+				"/backend-day.png",
+			);
+		});
+		expect(window.CustomBackgroundImageDay).toBe("/backend-day.png");
+		expect(window.CustomBackgroundImageNight).toBe("/backend-night.png");
 	});
 });

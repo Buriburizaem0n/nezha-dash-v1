@@ -2,15 +2,38 @@ import { DateTime } from "luxon";
 
 export function initCustomConfig() {
 	try {
+		// Default day / night background images
+		window.CustomBackgroundImageDay =
+			window.CustomBackgroundImageDay ||
+			"https://loohui.com/wp-content/uploads/images/background_day.jpg";
+		window.CustomBackgroundImageNight =
+			window.CustomBackgroundImageNight ||
+			"https://loohui.com/wp-content/uploads/images/background.jpg";
+
+		const savedTheme = localStorage.getItem("vite-ui-theme");
+		const systemDark =
+			typeof window !== "undefined" && window.matchMedia
+				? window.matchMedia("(prefers-color-scheme: dark)").matches
+				: false;
 		const hour = DateTime.now().hour;
-		const isNight = hour >= 18 || hour < 6;
+		const isScheduledNight = hour >= 18 || hour < 6;
 
-		// Use default values if window variables are not already set (e.g. by backend custom_code)
-		// although the goal is to hardcode these for "consistency".
+		let isDark = false;
+		if (savedTheme === "dark") {
+			isDark = true;
+		} else if (savedTheme === "light") {
+			isDark = false;
+		} else if (savedTheme === "scheduled") {
+			isDark = isScheduledNight;
+		} else if (savedTheme === "system") {
+			isDark = systemDark;
+		} else {
+			isDark = isScheduledNight;
+		}
 
-		window.CustomBackgroundImage = isNight
-			? "https://loohui.com/wp-content/uploads/images/background.jpg"
-			: "https://loohui.com/wp-content/uploads/images/background_day.jpg";
+		window.CustomBackgroundImage = isDark
+			? window.CustomBackgroundImageNight
+			: window.CustomBackgroundImageDay;
 
 		window.CustomMobileBackgroundImage = window.CustomBackgroundImage;
 

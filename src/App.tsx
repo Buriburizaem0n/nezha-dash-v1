@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { DateTime } from "luxon";
 import type React from "react";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -40,45 +39,56 @@ const MainApp: React.FC = () => {
 		retry: false,
 	});
 	const { i18n } = useTranslation();
-	const { setTheme } = useTheme();
+	const { setTheme, effectiveTheme } = useTheme();
 	const [isCustomCodeInjected, setIsCustomCodeInjected] = useState(false);
-	const { backgroundImage: customBackgroundImage } = useBackground();
+	const { backgroundImage: customBackgroundImage, updateBackground } =
+		useBackground();
 
 	useEffect(() => {
 		loadServerDetail();
 	}, []);
 
 	useEffect(() => {
-		const updateConfig = () => {
-			const config = settingData?.data?.config;
-			if (config) {
-				if (config.custom_code) {
-					InjectContext(config.custom_code);
-					setIsCustomCodeInjected(true);
-				}
-
-				// 同步自定义配置到全局变量
-				if (config.custom_logo) window.CustomLogo = config.custom_logo;
-				if (config.custom_description)
-					window.CustomDesc = config.custom_description;
-				if (config.custom_links) window.CustomLinks = config.custom_links;
-
-				const hour = DateTime.now().hour;
-				const isNight = hour >= 18 || hour < 6;
-
-				if (isNight && config.background_image_night) {
-					window.CustomBackgroundImage = config.background_image_night;
-				} else if (!isNight && config.background_image_day) {
-					window.CustomBackgroundImage = config.background_image_day;
-				}
-				window.CustomMobileBackgroundImage = window.CustomBackgroundImage;
+		const config = settingData?.data?.config;
+		if (config) {
+			if (config.custom_code) {
+				InjectContext(config.custom_code);
+				setIsCustomCodeInjected(true);
 			}
-		};
 
-		updateConfig();
-		const interval = setInterval(updateConfig, 60000); // Check every minute
-		return () => clearInterval(interval);
+			// 同步自定义配置到全局变量
+			if (config.custom_logo) window.CustomLogo = config.custom_logo;
+			if (config.custom_description)
+				window.CustomDesc = config.custom_description;
+			if (config.custom_links) window.CustomLinks = config.custom_links;
+
+			if (config.background_image_day) {
+				window.CustomBackgroundImageDay = config.background_image_day;
+			}
+			if (config.background_image_night) {
+				window.CustomBackgroundImageNight = config.background_image_night;
+			}
+		}
 	}, [settingData]);
+
+	// 监听有效主题以及配置变化，动态切换日夜背景
+	useEffect(() => {
+		const config = settingData?.data?.config;
+		const bgDay =
+			config?.background_image_day || window.CustomBackgroundImageDay;
+		const bgNight =
+			config?.background_image_night || window.CustomBackgroundImageNight;
+
+		const targetBg =
+			effectiveTheme === "dark"
+				? bgNight || window.CustomBackgroundImage
+				: bgDay || window.CustomBackgroundImage;
+
+		if (targetBg) {
+			updateBackground?.(targetBg);
+			window.CustomMobileBackgroundImage = targetBg;
+		}
+	}, [effectiveTheme, settingData, updateBackground]);
 
 	// 检测是否强制指定了主题颜色
 	const forceTheme =

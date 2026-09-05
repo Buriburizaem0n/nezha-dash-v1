@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 declare global {
 	interface Window {
 		CustomBackgroundImage: string;
+		CustomBackgroundImageDay?: string;
+		CustomBackgroundImageNight?: string;
 		CustomMobileBackgroundImage: string;
 		ForceShowServices: boolean;
 		ForceCardInline: boolean;
@@ -17,7 +19,7 @@ const BACKGROUND_CHANGE_EVENT = "backgroundChange";
 
 export function useBackground() {
 	const [backgroundImage, setBackgroundImage] = useState<string | undefined>(
-		undefined,
+		() => window.CustomBackgroundImage || undefined,
 	);
 
 	useEffect(() => {
@@ -61,10 +63,10 @@ export function useBackground() {
 		};
 	}, []);
 
-	const updateBackground = (newBackground: string | undefined) => {
+	const updateBackground = useCallback((newBackground: string | undefined) => {
 		window.CustomBackgroundImage = newBackground || "";
 		window.dispatchEvent(new Event(BACKGROUND_CHANGE_EVENT));
-	};
+	}, []);
 
 	return { backgroundImage, updateBackground };
 }

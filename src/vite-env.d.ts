@@ -2,6 +2,8 @@
 
 interface Window {
 	CustomBackgroundImage: string;
+	CustomBackgroundImageDay?: string;
+	CustomBackgroundImageNight?: string;
 	CustomMobileBackgroundImage: string;
 	ForceTheme: string;
 	CustomLogo: string;

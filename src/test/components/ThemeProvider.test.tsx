@@ -9,11 +9,12 @@ import {
 import { useTheme } from "@/hooks/use-theme";
 
 function ThemeProbe() {
-	const { setTheme, theme } = useTheme();
+	const { setTheme, theme, effectiveTheme } = useTheme();
 
 	return (
 		<div>
 			<p data-testid="theme-state">{theme}</p>
+			<p data-testid="effective-theme-state">{effectiveTheme}</p>
 			<button type="button" onClick={() => setTheme("dark")}>
 				dark
 			</button>
@@ -43,11 +44,17 @@ describe("ThemeProvider", () => {
 		);
 
 		expect(screen.getByTestId("theme-state")).toHaveTextContent("system");
+		expect(screen.getByTestId("effective-theme-state")).toHaveTextContent(
+			"light",
+		);
 		expect(document.documentElement).toHaveClass("light");
 
 		await user.click(screen.getByRole("button", { name: "dark" }));
 
 		expect(screen.getByTestId("theme-state")).toHaveTextContent("dark");
+		expect(screen.getByTestId("effective-theme-state")).toHaveTextContent(
+			"dark",
+		);
 		expect(localStorage.getItem("theme-test")).toBe("dark");
 		expect(document.documentElement).toHaveClass("dark");
 		expect(document.documentElement.style.colorScheme).toBe("dark");
@@ -57,6 +64,10 @@ describe("ThemeProvider", () => {
 		);
 
 		await user.click(screen.getByRole("button", { name: "light" }));
+		expect(screen.getByTestId("theme-state")).toHaveTextContent("light");
+		expect(screen.getByTestId("effective-theme-state")).toHaveTextContent(
+			"light",
+		);
 		expect(document.documentElement).toHaveClass("light");
 	});
 
