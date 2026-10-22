@@ -245,7 +245,7 @@ export default function ServerDetailOnlineHistory({
 }) {
 	const { t } = useTranslation();
 	const { lastData } = useWebSocketContext();
-	const [days, setDays] = useState(DAY_OPTIONS[1]);
+	const [days, setDays] = useState(DAY_OPTIONS[0]);
 	const [guestMaxDays, setGuestMaxDays] = useState<number | null>(null);
 	const [periodMode, setPeriodMode] = useState<PeriodMode>("online");
 	const [visibleDays, setVisibleDays] = useState(PERIODS_INITIAL_DAYS);

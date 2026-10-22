@@ -82,7 +82,7 @@ describe("ServerDetailOnlineHistory", () => {
 			screen.getByRole("status", { name: "serverOnlineHistory.loading" }),
 		).toHaveAttribute("aria-busy", "true");
 		expect(screen.getByTestId("online-history-loading")).toBeInTheDocument();
-		expect(apiMocks.fetchServerOnlineHistory).toHaveBeenCalledWith(7, 7);
+		expect(apiMocks.fetchServerOnlineHistory).toHaveBeenCalledWith(7, 1);
 	});
 
 	it("keeps existing content instead of flashing the skeleton while changing days", async () => {
@@ -299,7 +299,7 @@ describe("ServerDetailOnlineHistory", () => {
 
 		await user.click(screen.getByText("serverOnlineHistory.days30"));
 		expect(apiMocks.fetchServerOnlineHistory).toHaveBeenCalledTimes(1);
-		expect(apiMocks.fetchServerOnlineHistory).toHaveBeenCalledWith(7, 7);
+		expect(apiMocks.fetchServerOnlineHistory).toHaveBeenCalledWith(7, 1);
 	});
 
 	it("shows the login hint when the API rejects anonymous guests", async () => {
@@ -314,30 +314,34 @@ describe("ServerDetailOnlineHistory", () => {
 		).toBeInTheDocument();
 	});
 
-	it("falls back to one day and retries automatically for guests", async () => {
+	it("falls back to one day when guests request a longer window", async () => {
 		const user = userEvent.setup();
 		apiMocks.fetchServerOnlineHistory
+			.mockResolvedValueOnce(onlineHistoryResponse())
 			.mockRejectedValueOnce(
 				new Error("unauthorized: only 1d data available for guests"),
 			)
-			.mockResolvedValue(onlineHistoryResponse());
+			.mockResolvedValue(onlineHistoryResponse(1));
 
 		renderWithQuery(<ServerDetailOnlineHistory server_id="7" />);
 
-		// 首次 7d 被拒后自动以 1d 重试并渲染数据
+		// 首屏直接请求 1d；手动选择 7d 被拒后自动回退到 1d。
 		await screen.findByText("serverOnlineHistory.dailyOnline");
+		expect(apiMocks.fetchServerOnlineHistory).toHaveBeenNthCalledWith(1, 7, 1);
+		await user.click(screen.getByText("serverOnlineHistory.days7"));
 		await waitFor(() => {
 			expect(apiMocks.fetchServerOnlineHistory).toHaveBeenNthCalledWith(
-				2,
+				3,
 				7,
 				1,
 			);
 		});
+		expect(apiMocks.fetchServerOnlineHistory).toHaveBeenNthCalledWith(2, 7, 7);
 
 		// 更长窗口被锁定（游客上限 1 天），点击不再发起新请求
 		const calls = apiMocks.fetchServerOnlineHistory.mock.calls.length;
 		await user.click(screen.getByText("serverOnlineHistory.days30"));
-		expect(apiMocks.fetchServerOnlineHistory).toHaveBeenNthCalledWith(2, 7, 1);
+		expect(apiMocks.fetchServerOnlineHistory).toHaveBeenNthCalledWith(3, 7, 1);
 		expect(apiMocks.fetchServerOnlineHistory.mock.calls.length).toBe(calls);
 	});
 
