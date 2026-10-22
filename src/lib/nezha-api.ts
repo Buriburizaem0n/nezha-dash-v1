@@ -3,11 +3,20 @@ import type {
 	MetricPeriod,
 	MetricType,
 	MonitorResponse,
+	OnlineHistoryResponse,
 	ServerGroupResponse,
 	ServerMetricsResponse,
 	ServiceResponse,
 	SettingResponse,
 } from "@/types/nezha-api";
+
+export const API_ERROR_UNAUTHORIZED = "ApiErrorUnauthorized";
+
+export function isUnauthorizedError(error: unknown): boolean {
+	const message =
+		error instanceof Error ? error.message : error == null ? "" : String(error);
+	return message === API_ERROR_UNAUTHORIZED;
+}
 
 let lastestRefreshTokenAt = 0;
 
@@ -104,6 +113,21 @@ export const fetchServerMetrics = async (
 		? `?metric=${metric}&period=${period}`
 		: `?metric=${metric}`;
 	const response = await fetch(`/api/v1/server/${server_id}/metrics${query}`);
+	const data = await response.json();
+	if (data.error) {
+		throw new Error(data.error);
+	}
+	return data;
+};
+
+export const fetchServerOnlineHistory = async (
+	server_id: number,
+	days?: number,
+): Promise<OnlineHistoryResponse> => {
+	const query = days ? `?days=${days}` : "";
+	const response = await fetch(
+		`/api/v1/server/${server_id}/online-history${query}`,
+	);
 	const data = await response.json();
 	if (data.error) {
 		throw new Error(data.error);

@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
+import OnlineHistorySkeleton from "@/components/loading/OnlineHistorySkeleton";
 import NetworkChartLoading from "@/components/NetworkChartLoading";
 import ServerDetailChart from "@/components/ServerDetailChart";
 import ServerDetailOverview from "@/components/ServerDetailOverview";
@@ -12,12 +13,18 @@ const NetworkChart = lazy(() =>
 	})),
 );
 
+const ServerDetailOnlineHistory = lazy(() =>
+	import("@/components/ServerDetailOnlineHistory").then((module) => ({
+		default: module.default,
+	})),
+);
+
 export default function ServerDetail() {
 	useEffect(() => {
 		window.scrollTo({ top: 0, left: 0, behavior: "instant" });
 	}, []);
 
-	const tabs = ["Detail", "Network"];
+	const tabs = ["Detail", "Network", "Online"];
 	const [currentTab, setCurrentTab] = useState(tabs[0]);
 
 	const { id: server_id } = useParams();
@@ -49,6 +56,11 @@ export default function ServerDetail() {
 			{currentTab === tabs[1] && (
 				<Suspense fallback={<NetworkChartLoading />}>
 					<NetworkChart server_id={Number(server_id)} show={true} />
+				</Suspense>
+			)}
+			{currentTab === tabs[2] && (
+				<Suspense fallback={<OnlineHistorySkeleton />}>
+					<ServerDetailOnlineHistory server_id={server_id} />
 				</Suspense>
 			)}
 		</div>

@@ -14,6 +14,10 @@ import { WebSocketProvider } from "./context/websocket-provider";
 import { initCustomConfig } from "./lib/custom-config";
 import "./i18n";
 import "./index.css";
+// Bundled instead of loaded from jsdelivr: the CDN <link> in index.html was
+// render-blocking and unreliable on mainland networks. Vite hashes the flag
+// sprites into assets/, so they inherit the immutable cache headers.
+import "flag-icons/css/flag-icons.min.css";
 
 initCustomConfig();
 
